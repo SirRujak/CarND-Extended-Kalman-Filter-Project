@@ -11,12 +11,14 @@ KalmanFilter::KalmanFilter() {}
 KalmanFilter::~KalmanFilter() {}
 
 void KalmanFilter::Init(VectorXd &x_in, MatrixXd &P_in, MatrixXd &F_in,
-                        MatrixXd &H_in, MatrixXd &R_in, MatrixXd &Q_in) {
+                        MatrixXd &H_in, MatrixXd &R_laser_in,
+                        MatrixXd &R_radar_in, MatrixXd &Q_in) {
   x_ = x_in;
   P_ = P_in;
   F_ = F_in;
   H_ = H_in;
-  R_ = R_in;
+  R_laser_ = R_laser_in;
+  R_radar_ = R_radar_in;
   Q_ = Q_in;
 }
 
@@ -38,7 +40,7 @@ void KalmanFilter::Update(const VectorXd &z) {
   VectorXd z_pred = H_ * x_;
 	VectorXd y = z - z_pred;
 	MatrixXd Ht = H_.transpose();
-	MatrixXd S = H_ * P_ * Ht + R_;
+	MatrixXd S = H_ * P_ * Ht + R_laser_;
 	MatrixXd Si = S.inverse();
 	MatrixXd PHt = P_ * Ht;
 	MatrixXd K = PHt * Si;
